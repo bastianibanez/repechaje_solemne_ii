@@ -1,0 +1,90 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% Paquetes opcionales (descomenta si los tienes instalados):
+% \usepackage{lmodern}
+% \usepackage[spanish,es-noshorthands]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage[top=2cm,bottom=2cm,left=2.5cm,right=2.5cm]{geometry}
+
+% ----- Color de acento para los títulos de sección -----
+\definecolor{acento}{RGB}{197,90,30}
+
+% ----- Comando para los encabezados de sección (título + línea) -----
+\newcommand{\seccion}[1]{%
+  \vspace{0.7em}%
+  {\color{acento}\large\bfseries #1}\par%
+  \vspace{-0.35em}%
+  {\color{acento}\rule{\linewidth}{0.6pt}}\par%
+  \vspace{0.55em}%
+}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+{\color{acento}\Large\bfseries Caso 2: Reasignación Penitenciaria}\par
+\vspace{0.2em}
+{\itshape Modelo de optimización}\par
+
+% ============================================================
+\seccion{Definición de Conjuntos}
+\[
+\begin{aligned}
+R \;&:\ \text{Reclusos}\\[2pt]
+J \;&=\ \{1,\ldots,P\cdot Q\}\ :\ \text{Celdas}\\[2pt]
+C \;&=\ \{1,\ldots,|C|\}\ :\ \text{Causas judiciales}\\[2pt]
+P \;&:\ \text{Pares } (r,r') \text{ con tatuajes similares} \geq 70\%,\\
+   &\quad \text{donde } r,r' \in R \text{ y } r < r'\\[2pt]
+K \;&:\ \text{Pares } (r,r') \text{ de reclusos que fueron compañeros}\\
+   &\quad \text{de celda, donde } r,r' \in R \text{ y } r < r'
+\end{aligned}
+\]
+
+% ============================================================
+\seccion{Definición de Parámetros}
+\[
+\begin{aligned}
+\mathrm{Cap}_j \;&:\ \text{Capacidad máxima de la celda } j \in J\\[2pt]
+b_{rc} \in \{0,1\} \;&:\ 1 \text{ si el recluso } r \in R \text{ tiene la causa } c \in C
+\end{aligned}
+\]
+
+% ============================================================
+\seccion{Variables de Decisión}
+\[
+\begin{aligned}
+x_{rj} \in \{0,1\} \;&:\ 1 \text{ si el recluso } r \in R \text{ va en la celda } j \in J\\[2pt]
+y_{j} \in \{0,1\} \;&:\ 1 \text{ si se utiliza la celda } j \in J
+\end{aligned}
+\]
+
+% ============================================================
+\seccion{Función Objetivo}
+\[
+\min \; Z = \sum_{j \in J} y_j
+\]
+
+% ============================================================
+\seccion{Restricciones}
+\[
+\begin{aligned}
+& \sum_{j \in J} x_{rj} = 1
+  && \forall\, r \in R && (1)\\[3pt]
+& \sum_{r \in R} x_{rj} \leq \mathrm{Cap}_j \cdot y_j
+  && \forall\, j \in J && (2)\\[3pt]
+& x_{rj} + x_{r'j} \leq 1
+  && \forall\, (r,r') \in K,\; j \in J && (3)\\[3pt]
+& \sum_{r \in R} b_{rc} \cdot x_{rj} \leq 1
+  && \forall\, c \in C,\; j \in J && (4)\\[3pt]
+& x_{rj} + x_{r'j} \leq 1
+  && \forall\, (r,r') \in P,\; j \in J && (5)\\[3pt]
+& x_{rj},\, y_j \in \{0,1\}
+  && \forall\, r \in R,\; j \in J && (6)
+\end{aligned}
+\]
+
+\end{document}
