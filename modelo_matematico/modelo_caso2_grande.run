@@ -1,0 +1,36 @@
+# ============================================================
+# Ejecucion de la instancia GRANDE -- AMPL / CPLEX
+#   600 reclusos, 168 celdas (42 modulos x 4), Cq=4, 16 causas
+#   ~1050 pares tatuaje, ~900 pares companeros
+#   Tiempo esperado en Mac Air M2: ~7 s
+# Uso:  ampl modelo_caso2_grande.run
+# ============================================================
+
+reset;
+
+model modelo_caso2.mod;
+data  modelo_caso2_grande.dat;
+
+option solver cplex;
+option cplex_options 'mipdisplay=2 timelimit=60';
+
+solve;
+
+# ---------- Resumen ----------
+printf "\n==================== RESULTADO ====================\n";
+printf "Reclusos        = %d\n", card(R);
+printf "Celdas disponibles = %d  (capacidad total = %d)\n", card(J), sum{j in J} Cap[j];
+printf "Celdas utilizadas (Z) = %d\n", Z;
+printf "Cota inferior por capacidad = %d\n", ceil(card(R)/4);
+
+# verificacion rapida: cada recluso en exactamente 1 celda
+printf "Reclusos asignados = %d (debe ser %d)\n",
+       sum{r in R, j in J} (if x[r,j] > 0.5 then 1 else 0), card(R);
+
+# histograma de ocupacion (cuantas celdas con k reclusos)
+printf "\nOcupacion de celdas:\n";
+for {k in 0..4} {
+    printf "  celdas con %d reclusos: %d\n",
+        k, sum{j in J} (if abs((sum{r in R}(if x[r,j]>0.5 then 1 else 0)) - k) < 0.5 then 1 else 0);
+}
+printf "===================================================\n";

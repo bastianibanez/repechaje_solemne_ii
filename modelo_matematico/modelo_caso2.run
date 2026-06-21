@@ -1,0 +1,26 @@
+# ============================================================
+# Script de ejecucion -- AMPL con solver CPLEX
+# Uso:   ampl modelo_caso2.run
+# ============================================================
+
+reset;
+
+model modelo_caso2.mod;
+data  modelo_caso2.dat;
+
+option solver cplex;
+# mipdisplay=2 -> progreso; timelimit de seguridad (no se alcanza en esta instancia)
+option cplex_options 'mipdisplay=2 timelimit=300';
+
+solve;
+
+# ---------- Resultados ----------
+printf "\n==================== RESULTADO ====================\n";
+printf "Celdas utilizadas (Z) = %d\n\n", Z;
+
+for {j in J} {
+    printf "Celda %d  (usada=%d)  ->  reclusos: ", j, y[j];
+    for {r in R: x[r,j] > 0.5} printf "%d ", r;
+    printf "\n";
+}
+printf "===================================================\n";

@@ -1,0 +1,61 @@
+# ============================================================
+# Instancia ACOTADA para modelo_caso2.mod
+#
+# Dimensiones (pequenas a proposito -> corre en <1s en Mac Air M2):
+#   P = 2 modulos,  Q = 3 celdas/modulo  ->  |J| = P*Q = 6 celdas
+#   Cq = 3 (capacidad por celda)         ->  capacidad total = 18
+#   |R| = 12 reclusos                    ->  cabe holgadamente (12 <= 18)
+#   |C| = 6 causas
+#
+# Optimo conocido: existe asignacion factible con 5 celdas
+# (CPLEX deberia encontrar el minimo, <= 5).
+# ============================================================
+
+# ---------- Reclusos ----------
+set R := 1 2 3 4 5 6 7 8 9 10 11 12 ;
+
+# ---------- Celdas (P*Q = 6) ----------
+set J := 1 2 3 4 5 6 ;
+
+# ---------- Causas ----------
+set C := CAU1 CAU2 CAU3 CAU4 CAU5 CAU6 ;
+
+# ---------- Capacidad por celda (Cq = 3) ----------
+param Cap default 3 :=
+  1 3
+  2 3
+  3 3
+  4 3
+  5 3
+  6 3 ;
+
+# ---------- Causas por recluso  b[r,c] = 1 ----------
+# (solo se listan los 1; el resto es 0 por 'default 0')
+param b :
+        CAU1 CAU2 CAU3 CAU4 CAU5 CAU6 :=
+ 1       1    0    0    0    0    0
+ 2       1    0    0    0    0    0
+ 3       0    1    0    0    0    0
+ 4       0    1    1    0    0    0
+ 5       0    0    1    0    0    0
+ 6       0    0    0    1    0    0
+ 7       0    0    0    1    0    0
+ 8       0    0    0    0    1    0
+ 9       0    0    0    0    1    1
+ 10      0    0    0    0    0    1
+ 11      1    0    0    0    0    0
+ 12      0    1    0    0    0    0 ;
+
+# ---------- Pares con tatuajes similares >= 70%  (r < r') ----------
+set P_TAT :=
+  (1,3)
+  (2,4)
+  (9,10)
+  (11,12) ;
+
+# ---------- Pares de companeros de celda de origen  (r < r') ----------
+set K_COMP :=
+  (1,2)
+  (3,4)
+  (5,6)
+  (7,8) ;

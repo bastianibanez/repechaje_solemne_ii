@@ -1,0 +1,7 @@
+reset;
+model modelo_caso2.mod;
+data dbg.dat;
+option solver cplex;
+option cplex_options 'timelimit=30';
+solve;
+display Z, solve_result;
